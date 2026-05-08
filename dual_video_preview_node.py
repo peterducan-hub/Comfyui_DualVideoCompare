@@ -241,4 +241,4 @@ class DualVideoPreview:
 
 
 NODE_CLASS_MAPPINGS        = {"DualVideoPreview": DualVideoPreview}
-NODE_DISPLAY_NAME_MAPPINGS = {"DualVideoPreview": "Dual Video Preview 🎬"}
+NODE_DISPLAY_NAME_MAPPINGS = {"DualVideoPreview": "Dual Video Compare 🎬"}
