@@ -10,3 +10,5 @@ Documentation is mostly in the node descriptions and tooltips.
 2. Restart ComfyUI
 
 <img src="preview/dualvideopreview.jpeg"/> 
+
+<img src="preview/video_compare.gif"/> 
