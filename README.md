@@ -1,4 +1,4 @@
-# Dual Video Preview for ComfyUI
+# Dual Video Compare for ComfyUI
 
 Node to compare 2 videos with slider.
 At this point pretty random collection of utility, model optimization and QoL nodes, while keeping dependencies at minimum.
