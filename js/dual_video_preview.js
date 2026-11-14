@@ -7,6 +7,7 @@
  */
 
 import { app } from "/scripts/app.js";
+import { api } from "/scripts/api.js";
 
 function viewUrl(filename, subfolder = "", type = "output") {
   return `/view?${new URLSearchParams({ filename, subfolder, type })}&t=${Date.now()}`;
@@ -432,6 +433,46 @@ app.registerExtension({
       boxSizing: "border-box",
     });
     node.addDOMWidget("dvp_ui", "preview", container);
+
+    function showProgress() {
+      container.innerHTML = "";
+      const panel = document.createElement("div");
+      Object.assign(panel.style, {
+        height: "100%", display: "flex", flexDirection: "column",
+        justifyContent: "center", gap: "18px", padding: "24px",
+        boxSizing: "border-box", background: "#111", color: "#ddd",
+        fontFamily: "monospace",
+      });
+      for (let slot = 1; slot <= 2; slot++) {
+        const row = document.createElement("div");
+        const label = document.createElement("div");
+        label.textContent = `Video ${slot}: waiting…`;
+        label.style.marginBottom = "6px";
+        const track = document.createElement("div");
+        Object.assign(track.style, { height: "8px", borderRadius: "4px", background: "#333", overflow: "hidden" });
+        const bar = document.createElement("div");
+        Object.assign(bar.style, { width: "0%", height: "100%", background: "#58a6ff", transition: "width .15s" });
+        track.appendChild(bar);
+        row.append(label, track);
+        panel.appendChild(row);
+        node[`_dvpProgress${slot}`] = { label, bar };
+      }
+      container.appendChild(panel);
+    }
+
+    api.addEventListener("executing", (event) => {
+      if (String(event.detail) === String(node.id)) showProgress();
+    });
+
+    api.addEventListener("dvp_progress", (event) => {
+      const data = event.detail;
+      if (!data || String(data.node) !== String(node.id)) return;
+      const progress = node[`_dvpProgress${data.slot}`];
+      if (!progress) return;
+      const percent = data.max > 0 ? Math.min(100, data.value / data.max * 100) : 0;
+      progress.label.textContent = data.text || `Video ${data.slot}: ${Math.round(percent)}%`;
+      progress.bar.style.width = `${percent}%`;
+    });
 
     node.onExecuted = function(output) {
       const videos = output?.dual_videos;
